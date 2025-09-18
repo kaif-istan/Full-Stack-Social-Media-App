@@ -1,6 +1,37 @@
 import { BadgeCheck, X } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 
 const StoryViewer = ({ viewStory, setViewStory }) => {
+  const [progress, setProgress] = useState(0);
+  const elapsedRef = useRef(0);
+
+  useEffect(() => {
+    let timer, progressInterval;
+
+    if (viewStory && viewStory.media_type !== "video") {
+      setProgress(0);
+
+      const duration = 10000;
+      const stepTime = 100;
+        elapsedRef.current = 0;
+
+      progressInterval = setInterval(() => {
+        elapsedRef.current += stepTime;
+        setProgress((elapsedRef.current / duration) * 100);
+      }, stepTime);
+
+      // close story after duration
+      timer = setTimeout(() => {
+        setViewStory(null);
+      }, duration);
+
+      return () => {
+        clearTimeout(timer);
+        clearInterval(progressInterval);
+      };
+    }
+  }, [viewStory, setViewStory]);
+
   const handleClose = () => {
     setViewStory(null);
   };
@@ -49,7 +80,7 @@ const StoryViewer = ({ viewStory, setViewStory }) => {
       <div className="absolute top-0 left-0 w-full h-1 bg-gray-700">
         <div
           className="h-full bg-white transition-all duration-100 linear"
-          style={{ width: 50 }}
+          style={{ width: `${progress}%` }}
         ></div>
       </div>
       {/* User Info - Top Left */}

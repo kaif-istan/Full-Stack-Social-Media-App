@@ -16,7 +16,7 @@ const StoriesBar = () => {
     fetchStories();
   }, []);
   return (
-    <div className="w-screen sm:w-[calc(1000vw-240px)] lg:max-w-2xl no-scrollbar overflow-x-auto px-4 ">
+    <div className="no-scrollbar w-screen sm:w-[calc(1000vw-240px)] lg:max-w-2xl no-scrollbar overflow-x-auto px-4 ">
       <div className="flex gap-4 pb-5">
         {/* Add Story Card */}
         <div
