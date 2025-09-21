@@ -3,7 +3,7 @@ import cors from "cors";
 import "dotenv/config";
 import connectDB from "./configs/db.js";
 import { inngest, functions } from "./inngest/index.js"
-import {serve} from 'ingest/express';
+import {serve} from 'inngest/express';
 const app = express();
 
 await connectDB();
