@@ -5,7 +5,7 @@ import connectDB from "./configs/db.js";
 import { inngest, functions } from "./inngest/index.js"
 import { serve } from 'inngest/express';
 import { clerkMiddleware } from '@clerk/express'
-import userRouter from "./routes/userRouter.js";
+import userRouter from "./routes/userRoutes.js";
 
 const app = express();
 
