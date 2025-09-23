@@ -295,7 +295,7 @@ export const acceptConnectionRequest = async (req, res) => {
     await user.save()
 
     const toUser = await User.findById(id)
-    user.connections.push(userId)
+    toUser.connections.push(userId)
     await toUser.save()
 
     connection.status = 'accepted';
