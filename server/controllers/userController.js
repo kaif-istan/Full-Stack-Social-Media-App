@@ -1,6 +1,7 @@
 import imageKit from "../configs/imageKit.js";
 import { inngest } from "../inngest/index.js";
 import Connection from "../models/Connection.js";
+import Post from "../models/Post.js";
 import User from "../models/User.js";
 import fs from "fs";
 
@@ -10,7 +11,7 @@ export const getUserData = async (req, res) => {
     const { userId } = req.auth();
     const user = await User.findById(userId);
     if (!user) {
-      res.json({ success: false, message: "User not found" });
+      return res.json({ success: false, message: "User not found" });
     }
     return res.json({ success: true, user });
   } catch (error) {
@@ -109,20 +110,25 @@ export const discoverUsers = async (req, res) => {
     const { userId } = req.auth();
     const { input } = req.body;
 
+    // Ensure input is string and not empty
+    if (!input) {
+      return res.json({ success: false, message: "Invalid search input" });
+    }
+
     const allUsers = await User.find({
       $or: [
-        { username: new RegExp(input, i) },
-        { email: new RegExp(input, i) },
-        { full_name: new RegExp(input, i) },
-        { location: new RegExp(input, i) },
+        { username: new RegExp(input, "i") },
+        { email: new RegExp(input, "i") },
+        { full_name: new RegExp(input, "i") },
+        { location: new RegExp(input, "i") },
       ],
     });
 
     const filteredUsers = allUsers.filter((user) => user._id !== userId);
 
-    res.json({ success: true, users: error.message });
+    res.json({ success: true, users: filteredUsers });
   } catch (error) {
-    console.log(error);
+    console.error("Error in discoverUsers:", error);
     res.json({ success: false, message: error.message });
   }
 };
@@ -244,6 +250,10 @@ export const getUserConnections = async (req, res) => {
       "connections followers following"
     );
 
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
     const connections = user.connections;
     const followers = user.followers;
     const following = user.following;
@@ -303,11 +313,12 @@ export const acceptConnectionRequest = async (req, res) => {
 export const getUserProfiles = async (req, res) => {
   try {
     const {profileId} = req.body
+    console.log(profileId)
     const profile = await User.findById(profileId)
     if(!profile){
       return res.json({success: false, message: 'Profile not found'})
     }
-    const posts = await postMessage.find({user: profileId}).populate('user')
+    const posts = await Post.find({user: profileId}).populate('user')
 
     res.json({success: true, profile, posts})
   } catch (error) {

@@ -68,7 +68,7 @@ export const likePost = async (req, res) => {
         const {userId} = req.auth()
         const {postId} = req.body
 
-        const post = await Post.find(postId)
+        const post = await Post.findById(postId)
 
         // Agar likes count me userId hai to unlike krdo, warna like krdo
         if(post.likes_count.includes(userId)){

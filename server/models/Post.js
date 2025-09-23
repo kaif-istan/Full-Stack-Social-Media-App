@@ -10,7 +10,7 @@ const postSchema = new mongoose.Schema(
       enum: ["text", "image", "text_with_image"],
       required: true,
     },
-    likes_count: { type: String, ref: "User" },
+    likes_count: [{ type: String, ref: "User" }],
   },
   { timestamps: true, minimize: false }
 );

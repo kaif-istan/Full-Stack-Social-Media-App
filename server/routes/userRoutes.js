@@ -19,7 +19,7 @@ userRouter.post('/connect', protect, sendConnectionRequest)
 
 userRouter.post('/accept', protect, acceptConnectionRequest)
 
-userRouter.post('/connections', protect, getUserConnections)
+userRouter.get('/connections', protect, getUserConnections)
 
 userRouter.post('/profiles', getUserProfiles)
 

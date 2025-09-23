@@ -3,8 +3,13 @@ import moment from "moment";
 import { useState } from "react";
 import { dummyUserData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import api from '../api/axios.js'
+import toast from 'react-hot-toast'
+import { useAuth } from '@clerk/clerk-react'
 const PostCard = ({ post }) => {
   const navigate = useNavigate()
+  const {getToken} = useAuth()
   const postWithHashtags = post.content.replace(
     /(#\w+)/g,
     '<span class="text-indigo-600">$1</span>'
@@ -12,9 +17,31 @@ const PostCard = ({ post }) => {
 
   const [likes, setLikes] = useState(post.likes_count);
 
-  const currentUser = dummyUserData;
+  const currentUser = useSelector((state) => state.user.value);
 
-  const handleLike = async () => {};
+   
+
+  const handleLike = async () => {
+    try {
+      const {data} = await api.post('/api/post/like', {postId: post._id}, {
+        headers: {Authorization: `Bearer ${await getToken()}`}
+      })
+      if (data.success){
+          toast.success(data.message)
+          setLikes(prev => {
+            if(prev.includes(currentUser._id)){
+              return prev.filter(id => id !== currentUser._id)
+            } else {
+              return [...prev, currentUser._id]
+            }
+          })
+      } else {
+        toast(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl">

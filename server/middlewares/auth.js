@@ -6,6 +6,6 @@ export const protect = (req, res, next) => {
         }
         next()
     } catch (error) {
-        return res.json({success: false, message: error.message})
+        return res.status(401).json({success: false, message: error.message})
     }
 }
